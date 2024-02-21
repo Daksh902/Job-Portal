@@ -1,0 +1,16 @@
+<%- include('layouts/mainLayout', { bodyClass: 'job-listings', currentUser, body: 'jobListings.ejs' }) %>
+
+<main>
+  <h1>Job Listings</h1>
+  <ul>
+    <% jobs.forEach(job => { %>
+      <li>
+        <h2><a href="/jobs/<%= job.id %>"><%= job.jobdesignation %></a></h2>
+        <p>Company: <%= job.companyname %></p>
+        <p>Posted On: <%= job.jobposted.toDateString() %></p>
+        <!-- Add more details as needed -->
+        <a href="/jobs/<%= job.id %>">See Details</a>
+      </li>
+    <% }); %>
+  </ul>
+</main>

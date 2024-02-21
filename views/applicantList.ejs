@@ -1,0 +1,16 @@
+
+<%- include('layouts/mainLayout', { bodyClass: 'applicant-list' }) %>
+
+<main>
+  <h1>Applicants for <%= job.jobdesignation %> at <%= job.companyname %></h1>
+  <ul>
+    <% applicants.forEach(applicant => { %>
+      <li>
+        <p>Name: <%= applicant.name %></p>
+        <p>Email: <%= applicant.email %></p>
+        <p>Contact: <%= applicant.contact %></p>
+        <a href="<%= applicant.resumePath %>">Download Resume</a>
+      </li>
+    <% }); %>
+  </ul>
+</main>

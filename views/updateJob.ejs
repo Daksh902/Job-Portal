@@ -1,0 +1,13 @@
+
+<%- include('layouts/mainLayout', { bodyClass: 'update-job' }) %>
+
+<main>
+  <h1>Update Job Posting</h1>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+  <form action="/jobs/<%= job.id %>/update" method="post">
+    <!-- Updated job details form fields -->
+    <button type="submit">Update Job</button>
+  </form>
+</main>

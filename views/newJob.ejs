@@ -1,0 +1,11 @@
+<%- include('layouts/mainLayout', { bodyClass: 'new-job', currentUser, body: 'path_to_newJob.ejs' }) %>
+
+<form action="/jobs/new" method="post">
+  <!-- Job details form fields -->
+  <label for="jobTitle">Job Title:</label>
+  <input type="text" id="jobTitle" name="jobTitle" required>
+
+  <!-- Add more fields as needed -->
+
+  <button type="submit">Create Job</button>
+</form>

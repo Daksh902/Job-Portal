@@ -1,0 +1,12 @@
+
+<%- include('layouts/mainLayout', { bodyClass: 'landing', currentUser }) %>
+
+<main>
+  <h1>Welcome to the Job Portal</h1>
+  <% if (currentUser) { %>
+    <p>Hello, <%= currentUser.name %>!</p>
+    <!-- Additional content for authenticated users -->
+  <% } else { %>
+    <!-- Content for non-authenticated users -->
+  <% } %>
+</main>

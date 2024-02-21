@@ -1,0 +1,27 @@
+<%- include('layouts/mainLayout', { bodyClass: 'job-details', currentUser, body: 'jobDetails.ejs' }) %>
+
+<main>
+  <h1><%= job.jobdesignation %> at <%= job.companyname %></h1>
+  <p>Location: <%= job.joblocation %></p>
+  <p>Salary: <%= job.salary %></p>
+  <p>Apply by: <%= job.applyby %></p>
+  <p>Skills Required: <%= job.skillsrequired.join(', ') %></p>
+  <p>Number of Openings: <%= job.numberofopenings %></p>
+
+  <% if (currentUser) { %>
+    <!-- Apply to this job form -->
+    <h2>Apply to this job</h2>
+    <form action="/jobs/<%= job.id %>/apply" method="post">
+      <!-- Form fields for applicant details -->
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <!-- Add more fields as needed -->
+
+      <button type="submit">Apply</button>
+    </form>
+
+    <!-- View Applicants link -->
+    <h2>Applicants</h2>
+    <a href="/jobs/<%= job.id %>/applicants">View Applicants</a>
+  <% } %>
+</main>
