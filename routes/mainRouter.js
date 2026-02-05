@@ -5,9 +5,9 @@ const jobController = require('../controllers/jobController.js');
 const jobModel = require('../models/job.js')
 // Landing Page
 router.get('/', (req, res) => {
-  const currentUser = req.session.user; // Adjust this based on your session setup
-
-  res.render('landing', { currentUser, body: 'landing' });
+  const currentUser = req.session.user;
+  const jobs = jobModel.getAllJobs().slice(0, 3); // Get first 3 jobs as featured/recent
+  res.render('landing', { currentUser, jobs, body: 'landing' });
 });
 
 // Job Listings Page
@@ -57,7 +57,7 @@ router.post('/apply/:id', jobController.postApplyJob);
 
 // 404 Page
 router.use((req, res) => {
-    const currentUser = req.session.user || null; // Ensure currentUser is defined
-    res.status(404).render('error404', { currentUser, body: 'error-404' });
-  });
+  const currentUser = req.session.user || null; // Ensure currentUser is defined
+  res.status(404).render('error404', { currentUser, body: 'error-404' });
+});
 module.exports = router;

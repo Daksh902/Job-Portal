@@ -1,27 +1,91 @@
-<%- include('layouts/mainLayout', { bodyClass: 'job-details', currentUser, body: 'jobDetails.ejs' }) %>
+<%- include('partials/header', { bodyClass: 'job-details' , currentUser }) %>
 
-<main>
-  <h1><%= job.jobdesignation %> at <%= job.companyname %></h1>
-  <p>Location: <%= job.joblocation %></p>
-  <p>Salary: <%= job.salary %></p>
-  <p>Apply by: <%= job.applyby %></p>
-  <p>Skills Required: <%= job.skillsrequired.join(', ') %></p>
-  <p>Number of Openings: <%= job.numberofopenings %></p>
+  <div class="job-details-container" style="max-width: 800px; margin: 0 auto;">
+    <div class="card">
+      <div style="margin-bottom: 2rem;">
+        <h1 style="margin-bottom: 0.5rem;">
+          <%= job.jobdesignation %>
+        </h1>
+        <h2 style="font-size: 1.25rem; color: var(--primary); font-weight: 500;">
+          <%= job.companyname %>
+        </h2>
 
-  <% if (currentUser) { %>
-    <!-- Apply to this job form -->
-    <h2>Apply to this job</h2>
-    <form action="/jobs/<%= job.id %>/apply" method="post">
-      <!-- Form fields for applicant details -->
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-      <!-- Add more fields as needed -->
+        <div style="display: flex; gap: 1.5rem; margin-top: 1rem; color: var(--text-muted);">
+          <span>📍 <%= job.location || job.joblocation %></span>
+          <span>💰 <%= job.salary || 'Not specified' %></span>
+          <span>📅 Posted <%= new Date(job.jobposted).toLocaleDateString() %></span>
+        </div>
+      </div>
 
-      <button type="submit">Apply</button>
-    </form>
+      <div style="margin-bottom: 2rem;">
+        <h3>Job Description</h3>
+        <p style="white-space: pre-wrap;">
+          <%= job.description || 'No description provided.' %>
+        </p>
+      </div>
 
-    <!-- View Applicants link -->
-    <h2>Applicants</h2>
-    <a href="/jobs/<%= job.id %>/applicants">View Applicants</a>
-  <% } %>
-</main>
+      <div style="margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div>
+          <h3>Key Skills</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <% if (job.skillsrequired && job.skillsrequired.length> 0) { %>
+              <% job.skillsrequired.forEach(skill=> { %>
+                <span
+                  style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.9rem;">
+                  <%= skill %>
+                </span>
+                <% }) %>
+                  <% } else { %>
+                    <span style="color: var(--text-muted)">No specific skills listed</span>
+                    <% } %>
+          </div>
+        </div>
+        <div>
+          <h3>Details</h3>
+          <p><strong>Openings:</strong>
+            <%= job.numberofopenings || 1 %>
+          </p>
+          <p><strong>Apply By:</strong>
+            <%= job.applyby ? new Date(job.applyby).toLocaleDateString() : 'ASAP' %>
+          </p>
+        </div>
+      </div>
+
+      <% if (currentUser) { %>
+        <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 2rem 0;">
+
+        <div
+          style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 1.5rem; border-radius: 0.5rem;">
+          <h2 style="color: var(--secondary);">Apply for this position</h2>
+          <form action="/jobs/<%= job.id %>/apply" method="post" enctype="multipart/form-data"
+            style="margin-top: 1rem;">
+            <div>
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" value="<%= currentUser.name %>" required>
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" value="<%= currentUser.email %>" required>
+            </div>
+            <div>
+              <label for="resume">Upload Resume (PDF)</label>
+              <input type="file" id="resume" name="resume" accept="application/pdf" required style="padding: 0.5rem;">
+            </div>
+
+            <button type="submit" class="btn" style="background: var(--secondary); margin-top: 1rem;">Submit
+              Application</button>
+          </form>
+        </div>
+
+        <div style="margin-top: 2rem; text-align: center;">
+          <a href="/jobs/<%= job.id %>/applicants" class="btn btn-secondary">View Current Applicants</a>
+        </div>
+        <% } else { %>
+          <div
+            style="text-align: center; margin-top: 2rem; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem;">
+            <p>Please <a href="/login" style="font-weight: bold;">Login</a> to apply for this job.</p>
+          </div>
+          <% } %>
+    </div>
+  </div>
+<%- include('partials/footer') %>

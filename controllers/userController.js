@@ -15,19 +15,20 @@ exports.postLogin = async (req, res) => {
     req.session.userId = user.id;
     res.redirect('/jobs');
   } else {
-    res.render('login', { error: 'Invalid email or password' });
+    const currentUser = req.session.user || null;
+    res.render('login', { error: 'Invalid email or password', currentUser });
   }
 };
 
 // Registration Page
 exports.getRegistration = (req, res) => {
-  console.log("req.session.user:", req.session.user);
   const currentUser = req.session.user || null;
-  const error = req.query.error || null; // Adjust this based on your session setup
-  res.render('registration', { currentUser, body: 'registration',error });
+  const error = req.query.error || null;
+  res.render('registration', { currentUser, error });
 };
 
 exports.postRegistration = async (req, res) => {
+  const currentUser = req.session.user || null;
   try {
     const { name, email, password } = req.body;
     const newUser = await userModel.createUser(name, email, password);
@@ -36,10 +37,10 @@ exports.postRegistration = async (req, res) => {
       req.session.userId = newUser.id;
       res.redirect('/jobs');
     } else {
-      res.render('registration', { error: 'Registration failed' });
+      res.render('registration', { error: 'Registration failed', currentUser });
     }
   } catch (error) {
     console.error(error);
-    res.render('registration', { error: 'An unexpected error occurred during registration' });
+    res.render('registration', { error: 'An unexpected error occurred during registration', currentUser });
   }
 };

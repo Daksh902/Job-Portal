@@ -1,5 +1,12 @@
 // user.js
-const users = [];
+const users = [
+  {
+    id: 1,
+    name: "Demo User",
+    email: "demo@example.com",
+    password: "password123"
+  }
+];
 
 exports.getUserByEmail = (email) => {
   return users.find((user) => user.email === email);

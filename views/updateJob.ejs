@@ -1,13 +1,67 @@
+<%- include('partials/header', { bodyClass: 'update-job' }) %>
 
-<%- include('layouts/mainLayout', { bodyClass: 'update-job' }) %>
+  <div class="auth-container" style="max-width: 600px;">
+    <div class="card">
+      <div class="auth-header">
+        <h1>Update Job Posting</h1>
+        <p style="color: var(--text-muted)">Edit details for <%= job.jobdesignation %>
+        </p>
+      </div>
 
-<main>
-  <h1>Update Job Posting</h1>
-  <% if (error) { %>
-    <p class="error"><%= error %></p>
-  <% } %>
-  <form action="/jobs/<%= job.id %>/update" method="post">
-    <!-- Updated job details form fields -->
-    <button type="submit">Update Job</button>
-  </form>
-</main>
+      <% if (error) { %>
+        <div
+          style="background: rgba(244, 63, 94, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+          <%= error %>
+        </div>
+        <% } %>
+
+          <form action="/jobs/<%= job.id %>/update" method="post">
+            <div>
+              <label for="companyname">Company Name</label>
+              <input type="text" id="companyname" name="companyname" value="<%= job.companyname %>" required>
+            </div>
+
+            <div>
+              <label for="jobdesignation">Job Title / Designation</label>
+              <input type="text" id="jobdesignation" name="jobdesignation" value="<%= job.jobdesignation %>" required>
+            </div>
+
+            <div>
+              <label for="location">Location</label>
+              <input type="text" id="location" name="location" value="<%= job.location || job.joblocation %>" required>
+            </div>
+
+            <div>
+              <label for="salary">Salary (Optional)</label>
+              <input type="text" id="salary" name="salary" value="<%= job.salary %>">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label for="numberofopenings">Openings</label>
+                <input type="number" id="numberofopenings" name="numberofopenings" min="1"
+                  value="<%= job.numberofopenings %>">
+              </div>
+              <div>
+                <label for="applyby">Apply By</label>
+                <input type="date" id="applyby" name="applyby"
+                  value="<%= job.applyby ? new Date(job.applyby).toISOString().split('T')[0] : '' %>">
+              </div>
+            </div>
+
+            <div>
+              <label for="skills">Skills (Comma Separated)</label>
+              <input type="text" id="skills" name="skills"
+                value="<%= job.skillsrequired ? job.skillsrequired.join(', ') : '' %>">
+            </div>
+
+            <div>
+              <label for="description">Job Description</label>
+              <textarea id="description" name="description" rows="5" required><%= job.description %></textarea>
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Update Job</button>
+          </form>
+    </div>
+  </div>
+<%- include('partials/footer') %>

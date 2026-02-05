@@ -1,11 +1,58 @@
-<%- include('layouts/mainLayout', { bodyClass: 'new-job', currentUser, body: 'path_to_newJob.ejs' }) %>
+<%- include('partials/header', { bodyClass: 'new-job' , currentUser }) %>
 
-<form action="/jobs/new" method="post">
-  <!-- Job details form fields -->
-  <label for="jobTitle">Job Title:</label>
-  <input type="text" id="jobTitle" name="jobTitle" required>
+  <div class="auth-container" style="max-width: 600px;">
+    <div class="card">
+      <div class="auth-header">
+        <h1>Post a New Job</h1>
+        <p style="color: var(--text-muted)">Reach thousands of developers.</p>
+      </div>
 
-  <!-- Add more fields as needed -->
+      <form action="/jobs/new" method="post">
+        <div>
+          <label for="companyname">Company Name</label>
+          <input type="text" id="companyname" name="companyname" placeholder="e.g. Acme Corp" required>
+        </div>
 
-  <button type="submit">Create Job</button>
-</form>
+        <div>
+          <label for="jobdesignation">Job Title / Designation</label>
+          <input type="text" id="jobdesignation" name="jobdesignation" placeholder="e.g. Senior Frontend Engineer"
+            required>
+        </div>
+
+        <div>
+          <label for="location">Location</label>
+          <input type="text" id="location" name="location" placeholder="e.g. Remote, New York, NY" required>
+        </div>
+
+        <div>
+          <label for="salary">Salary (Optional)</label>
+          <input type="text" id="salary" name="salary" placeholder="e.g. $120k - $150k">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <label for="numberofopenings">Openings</label>
+            <input type="number" id="numberofopenings" name="numberofopenings" min="1" value="1">
+          </div>
+          <div>
+            <label for="applyby">Apply By</label>
+            <input type="date" id="applyby" name="applyby">
+          </div>
+        </div>
+
+        <div>
+          <label for="skills">Skills (Comma Separated)</label>
+          <input type="text" id="skills" name="skills" placeholder="e.g. React, Node.js, TypeScript">
+        </div>
+
+        <div>
+          <label for="description">Job Description</label>
+          <textarea id="description" name="description" rows="5" required
+            placeholder="Describe the role, responsibilities, and requirements..."></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Post Job</button>
+      </form>
+    </div>
+  </div>
+<%- include('partials/footer') %>

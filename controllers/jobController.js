@@ -17,11 +17,12 @@ exports.getAllJobs = async (req, res) => {
 exports.getJobDetails = async (req, res) => {
   const jobId = req.params.id;
   const job = await jobModel.getJobById(jobId);
+  const currentUser = req.session.user || null;
 
   if (job) {
-    res.render('jobDetails', { job });
+    res.render('jobDetails', { job, currentUser });
   } else {
-    res.status(404).render('error404');
+    res.status(404).render('error404', { currentUser });
   }
 };
 
@@ -29,22 +30,34 @@ exports.getJobDetails = async (req, res) => {
 exports.getApplicants = async (req, res) => {
   const jobId = req.params.id;
   const applicants = await jobModel.getApplicants(jobId);
-  res.render('applicantList', { applicants });
+  const job = await jobModel.getJobById(jobId);
+  const currentUser = req.session.user || null;
+  res.render('applicantList', { applicants, job, currentUser });
 };
 
 // New Job Page
 exports.getNewJob = (req, res) => {
-  res.render('newJob');
+  const currentUser = req.session.user || null;
+  res.render('newJob', { currentUser });
 };
 
 exports.postNewJob = async (req, res) => {
   const jobData = req.body;
+  const currentUser = req.session.user || null;
+
+  // Process skills if present
+  if (jobData.skills && typeof jobData.skills === 'string') {
+    jobData.skillsrequired = jobData.skills.split(',').map(skill => skill.trim());
+  } else {
+    jobData.skillsrequired = [];
+  }
+
   const newJob = await jobModel.createJob(jobData);
 
   if (newJob) {
     res.redirect('/jobs');
   } else {
-    res.render('newJob', { error: 'Job creation failed' });
+    res.render('newJob', { error: 'Job creation failed', currentUser });
   }
 };
 
@@ -52,23 +65,30 @@ exports.postNewJob = async (req, res) => {
 exports.getUpdateJob = async (req, res) => {
   const jobId = req.params.id;
   const job = await jobModel.getJobById(jobId);
+  const currentUser = req.session.user || null;
 
   if (job) {
-    res.render('updateJob', { job });
+    res.render('updateJob', { job, currentUser });
   } else {
-    res.status(404).render('error404');
+    res.status(404).render('error404', { currentUser });
   }
 };
 
 exports.postUpdateJob = async (req, res) => {
   const jobId = req.params.id;
   const updatedJobData = req.body;
+  const currentUser = req.session.user || null;
+
+  if (updatedJobData.skills && typeof updatedJobData.skills === 'string') {
+    updatedJobData.skillsrequired = updatedJobData.skills.split(',').map(skill => skill.trim());
+  }
+
   const updatedJob = await jobModel.updateJob(jobId, updatedJobData);
 
   if (updatedJob) {
     res.redirect(`/jobs/${jobId}`);
   } else {
-    res.render('updateJob', { error: 'Job update failed' });
+    res.render('updateJob', { error: 'Job update failed', job: updatedJobData, currentUser });
   }
 };
 
@@ -76,11 +96,12 @@ exports.postUpdateJob = async (req, res) => {
 exports.getDeleteJob = async (req, res) => {
   const jobId = req.params.id;
   const deletedJob = await jobModel.deleteJob(jobId);
+  const currentUser = req.session.user || null;
 
   if (deletedJob) {
     res.redirect('/jobs');
   } else {
-    res.status(404).render('error404');
+    res.status(404).render('error404', { currentUser });
   }
 };
 
@@ -91,11 +112,12 @@ exports.postApplyJob = async (req, res) => {
     const applicantData = req.body;
     const resume = req.file.buffer; // Assuming multer middleware is used for file upload
     const applicationResult = await jobModel.applyToJob(jobId, applicantData, resume);
+    const currentUser = req.session.user || null;
 
     if (applicationResult) {
       res.redirect(`/jobs/${jobId}`);
     } else {
-      res.status(404).render('error404');
+      res.status(404).render('error404', { currentUser });
     }
   } catch (error) {
     console.error('Error in postApplyJob:', error);
